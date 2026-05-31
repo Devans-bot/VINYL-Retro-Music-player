@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-retro-bg: #FBF6EF;
+  --color-retro-text: #192131;
+  --color-ipod-body: #DFE0E2;
+  --color-ipod-wheel: #D0D2D5;
+  --color-ipod-wheel-center: #C0C3C6;
+  --color-ipod-body-border: rgba(0,0,0,0.1);
+  --color-wheel-icon: #ffffff;
+  --color-wheel-menu-text: #ffffff;
+  --color-screen-bg: #D9EAF0;
+  --color-screen-header: #B3CFD9;
+  --color-screen-border: #192131;
+  --color-retro-red: #D93844;
+  --color-retro-accent: #296073;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-retro-bg: var(--color-retro-bg);
+  --color-retro-text: var(--color-retro-text);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ipod-body: var(--color-ipod-body);
+  --color-ipod-wheel: var(--color-ipod-wheel);
+  --color-ipod-wheel-center: var(--color-ipod-wheel-center);
+  --color-ipod-body-border: var(--color-ipod-body-border);
+  --color-wheel-icon: var(--color-wheel-icon);
+  --color-wheel-menu-text: var(--color-wheel-menu-text);
+
+  --color-screen-bg: var(--color-screen-bg);
+  --color-screen-header: var(--color-screen-header);
+  --color-screen-border: var(--color-screen-border);
+
+  --color-retro-red: var(--color-retro-red);
+  --color-retro-accent: var(--color-retro-accent);
+
+  --font-sans: var(--font-jersey10), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-jersey10), var(--font-vt323), ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-retro-bg);
+  color: var(--color-retro-text);
+}
+
+/* Custom Utilities */
+@utility text-pixel {
+  font-family: var(--font-pixel);
+}
+
+@utility pixel-shadow {
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+}
+
+@utility inner-shadow {
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 10s linear infinite;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
 }

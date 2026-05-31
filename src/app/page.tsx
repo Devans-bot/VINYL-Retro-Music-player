@@ -1,65 +1,144 @@
-import Image from "next/image";
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { Play, Music, Disc, CassetteTape } from 'lucide-react';
+import Link from 'next/link';
+import { getAllTracks, getAllPlaylists, Track, Playlist } from '@/lib/db';
+import { usePlayer } from '@/context/PlayerContext';
+import { PlaylistItem } from '@/components/PlaylistItem';
 
 export default function Home() {
+  const [recentTracks, setRecentTracks] = useState<Track[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [randomGif, setRandomGif] = useState('/gifs/4.gif');
+  const { currentTrack, isPlaying, togglePlay, playTrack, progress, duration, setIsPlayerOpen } = usePlayer();
+
+  useEffect(() => {
+    if (currentTrack) {
+      const gifs = ['/gifs/1.gif', '/gifs/2.gif', '/gifs/3.gif', '/gifs/4.gif', '/gifs/5.gif', '/gifs/6.gif', '/gifs/7.gif', '/gifs/8.gif', '/gifs/9.gif', '/gifs/10.gif'];
+      setRandomGif(gifs[Math.floor(Math.random() * gifs.length)]);
+    }
+  }, [currentTrack?.id]);
+
+  useEffect(() => {
+    async function loadData() {
+      const allTracks = await getAllTracks();
+      // Sort by lastPlayedAt, fallback to addedAt
+      allTracks.sort((a, b) => (b.lastPlayedAt || b.addedAt) - (a.lastPlayedAt || a.addedAt));
+      setRecentTracks(allTracks.slice(0, 5)); // Get 5 recent songs
+
+      const allPlaylists = await getAllPlaylists();
+      setPlaylists(allPlaylists);
+    }
+    loadData();
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col font-sans h-full">
+      {/* Now Playing Banner */}
+      {currentTrack ? (
+        <div className="block relative w-full bg-white/70 overflow-hidden shrink-0 py-4 ">
+          <div className="absolute top-0 left-0 w-full flex justify-between h-1 z-10">
+            <div className="w-1/4 h-full bg-[#E53935]"></div>
+            <div className="w-1/4 h-full bg-[#F5A623]"></div>
+            <div className="w-1/4 h-full bg-[#4A90E2]"></div>
+            <div className="w-1/4 h-full bg-[#50E3C2]"></div>
+          </div>
+          <div className="px-1  flex items-center h-full">
+            <div className="w-28  h-20 rounded bg-black flex items-center justify-center mr-3 shadow-inner overflow-hidden relative shrink-0">
+              {isPlaying ? (
+                <img src={randomGif} alt="Retro Jamming" className="w-full h-full object-cover" />
+              ) : (
+                <div className="text-retro-red font-pixel text-lg tracking-widest">PAUSED !</div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <button onClick={() => setIsPlayerOpen(true)} className="block cursor-pointer text-left w-full">
+                <div className="bg-white p-1 px-2 rounded-xl border-2 border-black/20 text-screen-border leading-tight overflow-hidden">
+                  <div className="flex w-max animate-marquee whitespace-nowrap items-center">
+                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
+                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
+                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
+                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
+                  </div>
+                </div>
+              </button>
+
+              {/* Progress Bar */}
+              <div className="mt-2 pr-2">
+                <div className="w-full h-2 border-1 border-black/10 bg-blue-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 transition-all duration-300"
+                    style={{ width: `${duration > 0 ? (progress / duration) * 100 : 0}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="absolute bottom-0 left-0 w-full flex justify-between h-1 z-10">
+            <div className="w-1/4 h-full bg-[#E53935]"></div>
+            <div className="w-1/4 h-full bg-[#F5A623]"></div>
+            <div className="w-1/4 h-full bg-[#4A90E2]"></div>
+            <div className="w-1/4 h-full bg-[#50E3C2]"></div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      ) : (
+        <div className="block relative w-full h-20 bg-screen-header/20 overflow-hidden flex flex-col items-center justify-center shrink-0">
+          <div className="text-2xl mb-1 opacity-80">🎧</div>
+          <div className="text-screen-border/60 font-pixel text-[10px] tracking-widest uppercase">Silence... Play some tunes!</div>
         </div>
-      </main>
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 p-4 pb-[70px] overflow-y-auto no-scrollbar ">
+
+        {/* Recently Played */}
+        <section>
+          <div className="flex justify-between items-end mb-3">
+            <h2 className="font-pixel text-screen-border text-sm font-bold tracking-widest uppercase">
+              Recently Played
+            </h2>
+          </div>
+
+          <div className="space-y-1">
+            {recentTracks.length > 0 ? (
+              recentTracks.map((track, i) => (
+                <div
+                  key={track.id}
+                  onClick={() => playTrack(track, recentTracks)}
+                  className="flex items-center gap-3 p-2 rounded-lg bg-white/60 border border-black/5 shadow-inner hover:bg-white/80 cursor-pointer transition-colors group"
+                >
+                  <div className="w-14 h-10 rounded bg-screen-border/10 flex-shrink-0 flex items-center justify-center overflow-hidden relative">
+                    {track.coverArt ? (
+                      <img src={track.coverArt} alt={track.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <img src="/cassette-icon.jpg" alt="Cassette" className="w-full h-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Play size={16} className="text-white ml-0.5" fill="currentColor" />
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-screen-border truncate group-hover:text-retro-accent transition-colors">{track.title}</div>
+                    <div className="text-[10px] text-screen-border/70 truncate">{track.artist}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="py-4 text-center border-2 border-dashed border-screen-border/20 rounded-xl">
+                <p className="font-pixel text-[10px] text-screen-border/60">No recent tracks</p>
+                <Link href="/library" className="inline-block mt-3 text-[10px] bg-retro-accent text-white px-3 py-1.5 rounded font-pixel tracking-wider hover:opacity-80 active:scale-95 active:opacity-50 transition-all duration-100">
+                  IMPORT MUSIC
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+
+
+      </div>
     </div>
   );
 }
