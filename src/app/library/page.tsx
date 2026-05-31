@@ -31,6 +31,8 @@ export default function Library() {
   };
 
   const handleImportClick = () => {
+    // no-op — iOS requires direct label click, not programmatic .click()
+    // kept for any non-iOS path that still uses it
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -119,21 +121,23 @@ export default function Library() {
       </div>
       <div className="flex items-center justify-between mb-2 ">
 
-        <button
-          onClick={handleImportClick}
-          className="text-[10px] font-pixel tracking-wider bg-retro-accent text-white px-2 py-1 rounded hover:opacity-80 active:scale-95 active:opacity-50 transition-all duration-100"
-          disabled={isImporting}
+        {/* iOS-safe file picker: label wrap = direct user interaction, works on Safari/iOS */}
+        <label
+          className={`text-[10px] font-pixel tracking-wider bg-retro-accent text-white px-2 py-1 rounded cursor-pointer select-none
+            hover:opacity-80 active:scale-95 active:opacity-50 transition-all duration-100
+            ${isImporting ? 'opacity-50 pointer-events-none' : ''}`}
+          style={{ WebkitTapHighlightColor: 'transparent' } as React.CSSProperties}
         >
           {isImporting ? 'IMPORTING...' : '+ IMPORT'}
-        </button>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="audio/*"
-          multiple
-          className="hidden"
-        />
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept=".mp3,.m4a,.aac,.ogg,.wav,.flac,.opus,audio/mpeg,audio/mp4,audio/aac,audio/ogg,audio/wav,audio/flac,audio/opus,audio/*"
+            multiple
+            className="hidden"
+          />
+        </label>
       </div>
 
       {isLoading ? (
