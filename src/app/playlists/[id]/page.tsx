@@ -149,7 +149,7 @@ export default function PlaylistView() {
                   {track.coverArt ? (
                     <img src={track.coverArt} alt={track.title} className="w-full h-full object-cover" />
                   ) : (
-                    <img src="/cassette-icon.jpg" alt="Cassette" className="w-full h-full object-cover" />
+                    <img src="/cassette-tape.png" alt="Cassette" className="w-full h-full object-cover" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -217,7 +217,7 @@ export default function PlaylistView() {
                         {track.coverArt ? (
                           <img src={track.coverArt} alt={track.title} className="w-full h-full object-cover" />
                         ) : (
-                          <img src="/cassette-icon.jpg" alt="Cassette" className="w-full h-full object-cover" />
+                          <img src="/cassette-tape.png" alt="Cassette" className="w-full h-full object-cover" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">

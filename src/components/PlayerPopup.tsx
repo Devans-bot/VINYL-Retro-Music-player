@@ -66,29 +66,62 @@ export function PlayerPopup() {
           {/* Track Info & Controls Container - Fixed height at bottom */}
           <div className="shrink-0 w-full">
             {/* Track Info */}
-            <div className="w-full text-center mb-3">
+            <div className="w-full text-center mb-2">
               <h2 className="text-xs text-screen-border truncate px-2 leading-tight">{currentTrack.title}</h2>
-              <p className="text-[10px] text-screen-border/70 truncate px-2 mt-0.5">{currentTrack.artist}</p>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full ">
+            {/* Progress */}
+            <div className="w-full select-none px-1 pb-2">
+
+              {/* Time row */}
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-pixel text-xs tabular-nums" style={{ color: 'var(--color-screen-border)' }}>
+                  {formatTime(progress)}
+                </span>
+                <span className="font-pixel text-xs tabular-nums opacity-40" style={{ color: 'var(--color-screen-border)' }}>
+                  {formatTime(duration)}
+                </span>
+              </div>
+
+              {/* Bar */}
               <div
-                className="w-full h-1.5 bg-screen-header/30 rounded-full cursor-pointer relative"
+                className="w-full relative cursor-pointer"
+                style={{ height: '14px', background: 'transparent' }}
                 onClick={handleProgressClick}
               >
+                {/* Track */}
                 <div
-                  className="absolute top-0 left-0 h-full bg-retro-red rounded-full transition-all duration-100 ease-linear"
-                  style={{ width: `${(progress / (duration || 1)) * 100}%` }}
-                >
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow"></div>
-                </div>
-              </div>
-              <div className="flex justify-between text-[8px] text-screen-border/70 font-pixel mt-1.5">
-                <span>{formatTime(progress)}</span>
-                <span>{formatTime(duration)}</span>
+                  className="absolute inset-0"
+                  style={{
+                    border: '2px solid var(--color-screen-border)',
+                    borderRadius: 0,
+                    background: 'rgba(0,0,0,0.06)',
+                  }}
+                />
+                {/* Fill */}
+                <div
+                  className="absolute top-0 left-0 h-full"
+                  style={{
+                    width: `${(progress / (duration || 1)) * 100}%`,
+                    background: 'var(--color-screen-border)',
+                    borderRadius: 0,
+                    transition: 'width 0.1s linear',
+                  }}
+                />
+                {/* Playhead notch */}
+                <div
+                  className="absolute top-0 h-full"
+                  style={{
+                    width: '3px',
+                    left: `calc(${(progress / (duration || 1)) * 100}% - 1px)`,
+                    background: 'var(--color-screen-bg)',
+                    opacity: progress > 0 ? 1 : 0,
+                    transition: 'left 0.1s linear',
+                  }}
+                />
               </div>
             </div>
+
 
             {/* Controls */}
             <div className="flex items-center justify-between w-full px-4">

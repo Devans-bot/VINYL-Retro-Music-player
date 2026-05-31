@@ -54,23 +54,66 @@ export default function Home() {
             </div>
             <div className="flex-1 min-w-0">
               <button onClick={() => setIsPlayerOpen(true)} className="block cursor-pointer text-left w-full">
-                <div className="bg-white p-1 px-2 rounded-xl border-2 border-black/20 text-screen-border leading-tight overflow-hidden">
-                  <div className="flex w-max animate-marquee whitespace-nowrap items-center">
-                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
-                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
-                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
-                    <span className="font-pixel text-sm tracking-widest mr-8">{currentTrack.title}</span>
+                {/* 80s LCD Display */}
+                <div
+                  style={{
+                    background: '#b8cce0',
+                    border: '3px solid #3a5878',
+                    boxShadow: 'inset 0 1px 4px rgba(0,0,30,0.25), inset 0 -1px 2px rgba(255,255,255,0.4)',
+                    borderRadius: 0,
+                    padding: '5px 8px 4px',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Pixel dot grid overlay — 80s LCD panel texture */}
+                  <div style={{
+                    position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2,
+                    backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.08) 1px, transparent 1px)',
+                    backgroundSize: '3px 3px',
+                  }} />
+                  {/* Dark green LCD text */}
+                  <div className="flex w-max animate-marquee whitespace-nowrap items-center" style={{ position: 'relative', zIndex: 1 }}>
+                    {[0,1,2,3].map(i => (
+                      <span key={i} className="font-pixel text-sm tracking-widest mr-8" style={{
+                        color: '#0a1f3c',
+                        letterSpacing: '0.15em',
+                        opacity: 0.88,
+                      }}>
+                        {currentTrack.title}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </button>
 
-              {/* Progress Bar */}
-              <div className="mt-2 pr-2">
-                <div className="w-full h-2 border-1 border-black/10 bg-blue-100 rounded-full overflow-hidden">
+              {/* Retro Progress Bar — same style as player popup */}
+              <div className="mt-2 pr-2 select-none">
+                {/* Time row */}
+                <div className="flex justify-between mb-1">
+                  <span className="font-pixel text-[9px] tabular-nums" style={{ color: 'var(--color-screen-border)' }}>
+                    {(() => { const m = Math.floor(progress/60); const s = Math.floor(progress%60); return `${m}:${s<10?'0':''}${s}`; })()}
+                  </span>
+                  <span className="font-pixel text-[9px] tabular-nums opacity-40" style={{ color: 'var(--color-screen-border)' }}>
+                    {(() => { const m = Math.floor(duration/60); const s = Math.floor(duration%60); return `${m}:${s<10?'0':''}${s}`; })()}
+                  </span>
+                </div>
+                {/* Bar */}
+                <div className="w-full relative" style={{ height: '12px' }}>
+                  {/* Track */}
+                  <div className="absolute inset-0" style={{ border: '2px solid var(--color-screen-border)', borderRadius: 0, background: 'rgba(0,0,0,0.06)' }} />
+                  {/* Fill */}
                   <div
-                    className="h-full bg-blue-500 transition-all duration-300"
-                    style={{ width: `${duration > 0 ? (progress / duration) * 100 : 0}%` }}
-                  ></div>
+                    className="absolute top-0 left-0 h-full"
+                    style={{ width: `${duration > 0 ? (progress/duration)*100 : 0}%`, background: 'var(--color-screen-border)', borderRadius: 0, transition: 'width 0.1s linear' }}
+                  />
+                  {/* Playhead notch */}
+                  {progress > 0 && (
+                    <div
+                      className="absolute top-0 h-full"
+                      style={{ width: '3px', left: `calc(${(progress/(duration||1))*100}% - 1px)`, background: 'var(--color-screen-bg)', transition: 'left 0.1s linear' }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -114,7 +157,7 @@ export default function Home() {
                     {track.coverArt ? (
                       <img src={track.coverArt} alt={track.title} className="w-full h-full object-cover" />
                     ) : (
-                      <img src="/cassette-icon.jpg" alt="Cassette" className="w-full h-full object-cover" />
+                      <img src="/cassette-tape.png" alt="Cassette" className="w-full h-full object-cover" />
                     )}
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <Play size={16} className="text-white ml-0.5" fill="currentColor" />

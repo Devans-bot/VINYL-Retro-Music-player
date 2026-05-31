@@ -171,7 +171,7 @@ export default function Library() {
                   {track.coverArt ? (
                     <img src={track.coverArt} alt={track.title} className="w-full h-full object-cover" />
                   ) : (
-                    <img src="/cassette-icon.jpg" alt="Cassette" className="w-full h-full object-cover" />
+                    <img src="/cassette-tape.png" alt="Cassette" className="w-full h-full object-cover" />
                   )}
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Play size={16} className="text-white ml-0.5" fill="currentColor" />
