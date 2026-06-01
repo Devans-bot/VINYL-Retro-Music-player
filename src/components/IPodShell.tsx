@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { SkipBack, SkipForward, Play, FolderBookmark } from 'lucide-react';
 import { usePlayer } from '@/context/PlayerContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/components/ThemeProvider';
 
 interface IPodShellProps {
@@ -13,6 +13,8 @@ interface IPodShellProps {
 export function IPodShell({ children }: IPodShellProps) {
   const { togglePlay, nextTrack, prevTrack, setIsPlayerOpen, isPlayerOpen } = usePlayer();
   const router = useRouter();
+  const pathname = usePathname();
+  const isGame = pathname.startsWith('/games') && pathname !== '/games';
   const { activeTheme, stickers, wheelRadius, customLabels, customLabelColors, wheelGradient, screenEffect, accentStripe } = useTheme();
   
   const isLargeIconTheme = activeTheme === 'ARCADE' || activeTheme === 'PS1' || activeTheme === 'NINTENDO_SWITCH';
@@ -47,9 +49,13 @@ export function IPodShell({ children }: IPodShellProps) {
     if (deltaAngle > 180) deltaAngle -= 360;
     else if (deltaAngle < -180) deltaAngle += 360;
     if (Math.abs(deltaAngle) > 2) {
-      const scrollContainer = document.getElementById('ipod-screen-scroll-container');
-      if (scrollContainer) {
-        scrollContainer.scrollTop += deltaAngle * 1.5;
+      if (isGame) {
+        window.dispatchEvent(new CustomEvent('ipod-wheel', { detail: { delta: deltaAngle } }));
+      } else {
+        const scrollContainer = document.getElementById('ipod-screen-scroll-container');
+        if (scrollContainer) {
+          scrollContainer.scrollTop += deltaAngle * 1.5;
+        }
       }
       prevAngleRef.current = newAngle;
     }
@@ -141,7 +147,15 @@ export function IPodShell({ children }: IPodShellProps) {
           >
             {/* Menu / Top Button */}
             <button
-              onClick={() => { setIsPlayerOpen(false); router.push('/menu'); }}
+              onClick={() => {
+                if (pathname.startsWith('/games')) {
+                  router.push('/games');
+                  setIsPlayerOpen(false);
+                } else {
+                  setIsPlayerOpen(false);
+                  router.push('/menu');
+                }
+              }}
               className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-18 flex items-start justify-center pt-6 group active:bg-black/20 transition-colors duration-75 rounded-t-full"
             >
               <span
@@ -154,7 +168,10 @@ export function IPodShell({ children }: IPodShellProps) {
 
             {/* Prev / Left Button */}
             <button
-              onClick={() => { setIsPlayerOpen(false); prevTrack(); }}
+              onClick={() => {
+                if (isGame) window.dispatchEvent(new CustomEvent('ipod-btn', { detail: { btn: 'prev' } }));
+                else { setIsPlayerOpen(false); prevTrack(); }
+              }}
               className="absolute left-0 top-1/2 -translate-y-1/2 w-20 h-22 flex items-center justify-start pl-4 group active:bg-black/20 transition-colors duration-75"
             >
               {customLabels?.prev ? (
@@ -176,7 +193,10 @@ export function IPodShell({ children }: IPodShellProps) {
 
             {/* Next / Right Button */}
             <button
-              onClick={() => { setIsPlayerOpen(false); nextTrack(); }}
+              onClick={() => {
+                if (isGame) window.dispatchEvent(new CustomEvent('ipod-btn', { detail: { btn: 'next' } }));
+                else { setIsPlayerOpen(false); nextTrack(); }
+              }}
               className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-22 flex items-center justify-end pr-4 group active:bg-black/20 transition-colors duration-75"
             >
               {customLabels?.next ? (
@@ -198,7 +218,10 @@ export function IPodShell({ children }: IPodShellProps) {
 
             {/* Library / Bottom Button */}
             <button
-              onClick={() => { setIsPlayerOpen(false); router.push('/library'); }}
+              onClick={() => {
+                if (isGame) window.dispatchEvent(new CustomEvent('ipod-btn', { detail: { btn: 'lib' } }));
+                else { setIsPlayerOpen(false); router.push('/library'); }
+              }}
               className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-18 flex items-end justify-center pb-6 group active:bg-black/20 transition-colors duration-75 rounded-b-full"
             >
               {customLabels?.lib ? (
@@ -221,6 +244,10 @@ export function IPodShell({ children }: IPodShellProps) {
             {/* Center Button */}
             <button
               onClick={() => {
+                if (isGame) {
+                  window.dispatchEvent(new CustomEvent('ipod-btn', { detail: { btn: 'center' } }));
+                  return;
+                }
                 const now = Date.now();
                 if (now - lastTapRef.current < 350) {
                   setIsPlayerOpen(!isPlayerOpen);
