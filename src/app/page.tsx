@@ -10,12 +10,20 @@ import { PlaylistItem } from '@/components/PlaylistItem';
 export default function Home() {
   const [recentTracks, setRecentTracks] = useState<Track[]>([]);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [randomGif, setRandomGif] = useState('/gifs/4.gif');
+  const [randomGif, setRandomGif] = useState('/gifs/banner/Sony Cassette GIF.gif');
   const { currentTrack, isPlaying, togglePlay, playTrack, progress, duration, setIsPlayerOpen } = usePlayer();
 
   useEffect(() => {
     if (currentTrack) {
-      const gifs = ['/gifs/1.gif', '/gifs/2.gif', '/gifs/3.gif', '/gifs/4.gif', '/gifs/5.gif', '/gifs/6.gif', '/gifs/7.gif', '/gifs/8.gif', '/gifs/9.gif', '/gifs/10.gif'];
+      const gifs = [
+        '/gifs/banner/Art Animation GIF by umair anwar.gif',
+        '/gifs/banner/Loop Dj GIF by Shing02.gif',
+        '/gifs/banner/Music Festival Hk GIF by afhongkong.gif',
+        '/gifs/banner/Sony Cassette GIF.gif',
+        '/gifs/banner/Spotify Jamming GIF by SpongeBob SquarePants.gif',
+        '/gifs/banner/Vintage Tape GIF by Vidlings & Tapeheads.gif',
+        '/gifs/banner/happy dance GIF by joonasjoonas.gif'
+      ];
       setRandomGif(gifs[Math.floor(Math.random() * gifs.length)]);
     }
   }, [currentTrack?.id]);

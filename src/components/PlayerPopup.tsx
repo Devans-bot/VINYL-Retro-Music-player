@@ -8,11 +8,19 @@ import { usePlayer } from '@/context/PlayerContext';
 export function PlayerPopup() {
   const { currentTrack, isPlaying, progress, duration, togglePlay, nextTrack, prevTrack, seek, isPlayerOpen, setIsPlayerOpen } = usePlayer();
   const [isClient, setIsClient] = useState(false);
-  const [randomGif, setRandomGif] = useState('/gifs/4.gif');
+  const [randomGif, setRandomGif] = useState('/gifs/player/club check GIF.gif');
 
   useEffect(() => {
     if (currentTrack) {
-      const gifs = ['/gifs/1.gif', '/gifs/2.gif', '/gifs/3.gif', '/gifs/4.gif', '/gifs/5.gif', '/gifs/6.gif', '/gifs/7.gif', '/gifs/8.gif', '/gifs/9.gif', '/gifs/10.gif'];
+      const gifs = [
+        '/gifs/player/Dance Love GIF by Degen Toonz.gif',
+        '/gifs/player/Dance Pepe GIF.gif',
+        '/gifs/player/Mood Vibing GIF by KETNIPZ.gif',
+        '/gifs/player/Moving The Simpsons GIF.gif',
+        '/gifs/player/Sonic The Hedgehog Smile GIF by Mashed.gif',
+        '/gifs/player/Tired Winter Sun GIF by KETNIPZ.gif',
+        '/gifs/player/club check GIF.gif'
+      ];
       setRandomGif(gifs[Math.floor(Math.random() * gifs.length)]);
     }
   }, [currentTrack?.id]);
