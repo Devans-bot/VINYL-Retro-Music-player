@@ -30,7 +30,7 @@ export function PlaylistItem({ playlist, className = '', iconSize = 'large' }: P
 
   return (
     <Link
-      href={`/playlists/${playlist.id}`}
+      href={`/playlist?id=${playlist.id}`}
       className={`bg-white/60 p-3 rounded-xl border border-screen-border/10 flex flex-col items-center justify-center shadow-sm hover:bg-white/80 cursor-pointer active:scale-95 active:opacity-80 transition-all duration-100 group ${className}`}
     >
       <div className={`${iconClasses} bg-white/50 rounded-full flex items-center justify-center text-screen-border/50 group-hover:scale-105 transition-transform overflow-hidden shadow-inner shrink-0`}>

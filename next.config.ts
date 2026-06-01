@@ -9,6 +9,7 @@ const withSerwist = withSerwistInit({
 });
 
 const nextConfig: NextConfig = {
+  output: 'export',
   // Silence the "webpack config with Turbopack" warning — Serwist adds webpack
   // config internally; this empty turbopack object tells Next.js we're aware.
   turbopack: {},

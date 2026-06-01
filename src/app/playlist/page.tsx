@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { ChevronLeft, Play, Music, Trash2, X, Plus, Check } from 'lucide-react';
 import { getPlaylist, getAllTracks, Track, Playlist, deletePlaylist, addPlaylist } from '@/lib/db';
 import { usePlayer } from '@/context/PlayerContext';
 
-export default function PlaylistView() {
-  const params = useParams();
+function PlaylistContent() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { playTrack } = usePlayer();
 
@@ -20,10 +20,15 @@ export default function PlaylistView() {
 
   useEffect(() => {
     load();
-  }, [params.id]);
+  }, [searchParams.get('id')]);
 
   async function load() {
-    const pl = await getPlaylist(params.id as string);
+    const id = searchParams.get('id');
+    if (!id) {
+      router.push('/playlists');
+      return;
+    }
+    const pl = await getPlaylist(id);
     if (!pl) {
       router.push('/playlists');
       return;
@@ -238,5 +243,13 @@ export default function PlaylistView() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PlaylistView() {
+  return (
+    <React.Suspense fallback={<div className="flex items-center justify-center h-full font-pixel text-xs text-screen-border/50">LOADING...</div>}>
+      <PlaylistContent />
+    </React.Suspense>
   );
 }

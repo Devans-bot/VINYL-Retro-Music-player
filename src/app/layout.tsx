@@ -28,6 +28,7 @@ const jersey10 = Jersey_10({
 export const metadata: Metadata = {
   title: "Vinyl - Retro Music Player",
   description: "A retro iPod style music player",
+  manifest: "/manifest.json",
 };
 
 
