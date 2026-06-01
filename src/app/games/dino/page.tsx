@@ -15,27 +15,35 @@ export default function DinoRunner() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Load Background
+    const bgImg = new Image();
+    bgImg.src = '/dino-bg.png';
+
     // Game state
     let isGameOver = false;
     let currentScore = 0;
     let frames = 0;
-    let gameSpeed = 3;
+    let gameSpeed = 2; // Slower start
+    let bgX = 0;
 
     // Physics & Objects
-    const gravity = 0.6;
+    const gravity = 0.5;
+    const floorY = 120; // Adjusted floor to fit 144px height nicely
     const dino = {
       x: 20,
       y: 100,
       w: 12,
-      h: 12,
+      h: 14,
       dy: 0,
-      jumpForce: -8,
+      jumpForce: -7,
       isGrounded: true,
     };
 
-    let obstacles: { x: number; y: number; w: number; h: number }[] = [];
+    let obstacles: { x: number; y: number; w: number; h: number; emoji: string; isFlying: boolean }[] = [];
 
-    // Colors
+    const GROUND_OBSTACLES = ['🌴', '🪾', '🌲'];
+    const FLYING_OBSTACLES = ['🦅', '🚁'];
+
     const getThemeColor = () => {
       const el = document.documentElement;
       const color = getComputedStyle(el).getPropertyValue('--color-screen-border').trim();
@@ -52,9 +60,11 @@ export default function DinoRunner() {
         currentScore = 0;
         setScore(0);
         obstacles = [];
-        dino.y = 100;
+        dino.y = floorY - dino.h;
         dino.dy = 0;
-        gameSpeed = 3;
+        gameSpeed = 2;
+        bgX = 0;
+        frames = 0;
       } else if (dino.isGrounded) {
         dino.dy = dino.jumpForce;
         dino.isGrounded = false;
@@ -79,18 +89,43 @@ export default function DinoRunner() {
       // Clear
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Floor
+      // Draw Scrolling Background
+      if (bgImg.complete) {
+        ctx.drawImage(bgImg, bgX, 0, canvas.width, canvas.height);
+        ctx.drawImage(bgImg, bgX + canvas.width, 0, canvas.width, canvas.height);
+      } else {
+        // Fallback color
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-screen-bg').trim() || '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Draw Floor line (optional, adds contrast)
       ctx.fillStyle = themeColor;
-      ctx.fillRect(0, 112, canvas.width, 1);
+      ctx.fillRect(0, floorY, canvas.width, 1);
 
-      // Dino
-      ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
-      // Eye
-      ctx.clearRect(dino.x + 8, dino.y + 2, 2, 2);
+      // Setup emoji font
+      ctx.font = '16px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"';
+      ctx.textBaseline = 'top';
 
-      // Obstacles
+      // Draw Dino (inverted to face right)
+      ctx.save();
+      ctx.scale(-1, 1);
+      // Because we scaled by -1 on X axis, we draw at -x - width
+      // adding a tiny offset for visual centering
+      ctx.fillText('🦖', -dino.x - dino.w - 2, dino.y - 2); 
+      ctx.restore();
+
+      // Draw Obstacles
       obstacles.forEach(obs => {
-        ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+        // Flip the eagle and chopper so they face left towards the dino
+        if (obs.isFlying) {
+           ctx.save();
+           ctx.scale(-1, 1);
+           ctx.fillText(obs.emoji, -obs.x - obs.w - 2, obs.y - 2);
+           ctx.restore();
+        } else {
+           ctx.fillText(obs.emoji, obs.x - 2, obs.y - 2);
+        }
       });
     };
 
@@ -98,52 +133,82 @@ export default function DinoRunner() {
       if (isGameOver) return;
       frames++;
 
+      // Parallax background
+      bgX -= gameSpeed * 0.3;
+      if (bgX <= -canvas.width) {
+        bgX = 0;
+      }
+
       // Physics
       dino.dy += gravity;
       dino.y += dino.dy;
 
       // Ground collision
-      if (dino.y + dino.h >= 112) {
-        dino.y = 112 - dino.h;
+      if (dino.y + dino.h >= floorY) {
+        dino.y = floorY - dino.h;
         dino.dy = 0;
         dino.isGrounded = true;
       }
 
       // Spawn obstacles
-      if (frames % Math.max(30, Math.floor(100 - gameSpeed * 5)) === 0) {
-        const h = Math.random() > 0.5 ? 12 : 20; // Some tall, some short
-        obstacles.push({
-          x: canvas.width,
-          y: 112 - h,
-          w: 8,
-          h: h
-        });
+      // Spawn rate depends on speed
+      const spawnRate = Math.max(40, Math.floor(120 - gameSpeed * 10));
+      if (frames % spawnRate === 0) {
+        const isFlying = Math.random() > 0.6;
+        
+        if (isFlying) {
+          // Flying objects spawn either low (must jump) or high (must run under)
+          const spawnHigh = Math.random() > 0.5;
+          const y = spawnHigh ? floorY - 35 : floorY - 14; 
+          obstacles.push({
+            x: canvas.width,
+            y: y,
+            w: 12,
+            h: 12,
+            emoji: FLYING_OBSTACLES[Math.floor(Math.random() * FLYING_OBSTACLES.length)],
+            isFlying: true
+          });
+        } else {
+          // Trees
+          obstacles.push({
+            x: canvas.width,
+            y: floorY - 14,
+            w: 12,
+            h: 14,
+            emoji: GROUND_OBSTACLES[Math.floor(Math.random() * GROUND_OBSTACLES.length)],
+            isFlying: false
+          });
+        }
       }
 
       // Move and check collisions
       for (let i = 0; i < obstacles.length; i++) {
         let obs = obstacles[i];
-        obs.x -= gameSpeed;
+        // Flying objects might move slightly faster
+        obs.x -= gameSpeed * (obs.isFlying ? 1.2 : 1);
 
-        // Collision box
+        // A slightly forgiving hitbox
+        const hitboxPadding = 3;
         if (
-          dino.x < obs.x + obs.w &&
-          dino.x + dino.w > obs.x &&
-          dino.y < obs.y + obs.h &&
-          dino.y + dino.h > obs.y
+          dino.x + hitboxPadding < obs.x + obs.w - hitboxPadding &&
+          dino.x + dino.w - hitboxPadding > obs.x + hitboxPadding &&
+          dino.y + hitboxPadding < obs.y + obs.h - hitboxPadding &&
+          dino.y + dino.h - hitboxPadding > obs.y + hitboxPadding
         ) {
           isGameOver = true;
           setGameOver(true);
         }
       }
 
-      // Remove off-screen obstacles
+      // Remove off-screen obstacles and score
       if (obstacles.length > 0 && obstacles[0].x < -20) {
         obstacles.shift();
         currentScore += 10;
         setScore(currentScore);
+        
+        // Increase speed slightly after every 100 points
         if (currentScore % 100 === 0) {
-          gameSpeed += 0.5; // Speed up over time
+          gameSpeed += 0.2; 
         }
       }
     };
@@ -154,7 +219,13 @@ export default function DinoRunner() {
       animationId = requestAnimationFrame(loop);
     };
 
-    loop();
+    // Make sure font is loaded before first draw
+    document.fonts.ready.then(() => {
+      if (!isGameOver) {
+        cancelAnimationFrame(animationId);
+        loop();
+      }
+    });
 
     return () => {
       cancelAnimationFrame(animationId);
@@ -189,14 +260,14 @@ export default function DinoRunner() {
         <canvas
           ref={canvasRef}
           width={160}
-          height={144} // Classic gameboy res
+          height={144}
           className="w-full h-full object-contain"
           style={{ imageRendering: 'pixelated' }}
         />
         {gameOver && (
-          <div className="absolute inset-0 bg-screen-bg/80 flex flex-col items-center justify-center z-10">
-            <span className="font-pixel text-screen-border text-lg mb-2">GAME OVER</span>
-            <span className="font-pixel text-screen-border text-[10px] opacity-70">Press CENTER to restart</span>
+          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center z-10 backdrop-blur-sm">
+            <span className="font-pixel text-white text-lg mb-2 drop-shadow-md">GAME OVER</span>
+            <span className="font-pixel text-white text-[10px] drop-shadow-md opacity-90">Press CENTER to restart</span>
           </div>
         )}
       </div>
