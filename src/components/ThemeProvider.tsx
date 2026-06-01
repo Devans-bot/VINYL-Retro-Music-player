@@ -5,7 +5,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export type ThemeName =
   | 'CLASSIC' | 'GROOVY' | 'PSYCHEDELIC' | 'WOODSTOCK' | 'HOT_WAX' | 'RETRO_RAINBOW'
   | 'GAMEBOY' | 'MACINTOSH' | 'KAWAII' | 'TEKKEN'
-  | 'WALKMAN' | 'CRT' | 'APPLE_RAINBOW' | 'Y2K' | 'ARCADE' | 'PS1';
+  | 'WALKMAN' | 'CRT' | 'APPLE_RAINBOW' | 'Y2K' | 'ARCADE' | 'PS1'
+  | 'NINTENDO_SWITCH';
 
 interface Sticker {
   label: string;
@@ -19,6 +20,14 @@ interface Sticker {
 }
 
 interface CustomLabels {
+  menu?: string;
+  prev?: string;
+  next?: string;
+  lib?: string;
+  center?: string;
+}
+
+interface CustomLabelColors {
   menu?: string;
   prev?: string;
   next?: string;
@@ -40,6 +49,8 @@ interface ThemeConfig {
   '--wheel-border-radius': string;
   stickers: Sticker[];
   customLabels?: CustomLabels;
+  customLabelColors?: CustomLabelColors;
+  wheelGradient?: string;
   screenEffect?: 'crt' | 'rainbow' | 'y2k' | 'none';
   accentStripe?: string[];
 }
@@ -351,6 +362,40 @@ const themes: Record<ThemeName, ThemeConfig> = {
       { label: '🎮 1998', bg: '#003791', text: '#fff', border: '#282828', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
     ],
   },
+
+  // ──── NINTENDO SWITCH ────
+  NINTENDO_SWITCH: {
+    '--color-ipod-body': '#2D2D2D',          // Switch dark gray chassis
+    '--color-ipod-wheel': '#E4000F',          // fallback (overridden by gradient)
+    '--color-ipod-wheel-center': '#1A1A1A',   // Home button dark
+    '--color-ipod-body-border': 'rgba(0,0,0,0.4)',
+    '--color-wheel-icon': '#FFFFFF',
+    '--color-wheel-menu-text': '#FFFFFF',
+    '--color-screen-bg': '#1A1A1A',           // Switch OLED dark
+    '--color-screen-header': '#111111',
+    '--color-screen-border': '#E4000F',       // red accent from left Joy-Con
+    '--color-retro-accent': '#0AB9E6',        // blue from right Joy-Con
+    '--wheel-border-radius': '50%',
+    // Split left=red (Joy-Con L) / right=blue (Joy-Con R)
+    wheelGradient: 'linear-gradient(to right, #E4000F 50%, #0AB9E6 50%)',
+    // Face buttons: Y=green(left), X=blue(top), A=red(right), B=yellow(bottom)
+    customLabels: { menu: 'X', prev: 'Y', next: 'A', lib: 'B', center: '⌂' },
+    customLabelColors: {
+      menu: '#40C4FF',   // X — blue
+      prev: '#69B035',   // Y — green
+      next: '#FF3D3D',   // A — red
+      lib: '#F8C300',    // B — yellow
+      center: '#ffffff',
+    },
+    screenEffect: 'none',
+    stickers: [
+      { label: 'NINTENDO', bg: '#E4000F', text: '#fff', border: '#000', position: 'absolute -left-8 top-1/4', rotate: '-rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'SWITCH', bg: '#0AB9E6', text: '#fff', border: '#000', position: 'absolute -right-7 top-1/5', rotate: 'rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: 'JOY-CON', bg: '#1A1A1A', text: '#fff', border: '#E4000F', position: 'absolute -right-8 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: '+  −', bg: '#2D2D2D', text: '#fff', border: '#888', position: 'absolute -left-6 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-full', emoji: '' },
+      { label: '★ DOCK', bg: '#0AB9E6', text: '#fff', border: '#000', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
+    ],
+  },
 };
 
 export interface ThemeContextType {
@@ -361,6 +406,8 @@ export interface ThemeContextType {
   nightMode: boolean;
   setNightMode: (val: boolean) => void;
   customLabels?: { menu?: string; prev?: string; next?: string; lib?: string; center?: string };
+  customLabelColors?: { menu?: string; prev?: string; next?: string; lib?: string; center?: string };
+  wheelGradient?: string;
   screenEffect?: string;
   accentStripe?: string[];
 }
@@ -403,10 +450,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const currentConfig = themes[activeTheme];
-  const { stickers, '--wheel-border-radius': wheelRadius, customLabels, screenEffect, accentStripe, ...cssVars } = currentConfig;
+  const { stickers, '--wheel-border-radius': wheelRadius, customLabels, customLabelColors, wheelGradient, screenEffect, accentStripe, ...cssVars } = currentConfig;
 
   return (
-    <ThemeContext.Provider value={{ activeTheme, setTheme: handleSetTheme, stickers, wheelRadius, nightMode, setNightMode: handleSetNightMode, customLabels, screenEffect, accentStripe }}>
+    <ThemeContext.Provider value={{ activeTheme, setTheme: handleSetTheme, stickers, wheelRadius, nightMode, setNightMode: handleSetNightMode, customLabels, customLabelColors, wheelGradient, screenEffect, accentStripe }}>
       <div
         className="h-full w-full transition-colors duration-500"
         style={cssVars as React.CSSProperties}

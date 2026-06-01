@@ -13,7 +13,7 @@ interface IPodShellProps {
 export function IPodShell({ children }: IPodShellProps) {
   const { togglePlay, nextTrack, prevTrack, setIsPlayerOpen, isPlayerOpen } = usePlayer();
   const router = useRouter();
-  const { stickers, wheelRadius, customLabels, screenEffect, accentStripe } = useTheme();
+  const { stickers, wheelRadius, customLabels, customLabelColors, wheelGradient, screenEffect, accentStripe } = useTheme();
   const wheelRef = useRef<HTMLDivElement>(null);
   const prevAngleRef = useRef<number | null>(null);
   const lastTapRef = useRef<number>(0);
@@ -132,7 +132,7 @@ export function IPodShell({ children }: IPodShellProps) {
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerUp}
             className="w-64 h-64 bg-ipod-wheel flex items-center justify-center overflow-hidden relative shadow-[0_8px_20px_rgba(0,0,0,0.2)] border-2 border-white/10 transition-all duration-500 touch-none"
-            style={{ borderRadius: wheelRadius }}
+            style={{ borderRadius: wheelRadius, ...(wheelGradient ? { background: wheelGradient } : {}) }}
           >
             {/* Menu / Top Button */}
             <button
@@ -140,8 +140,8 @@ export function IPodShell({ children }: IPodShellProps) {
               className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-18 flex items-start justify-center pt-6 group active:bg-black/20 transition-colors duration-75 rounded-t-full"
             >
               <span
-                className="font-pixel tracking-widest text-lg opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
-                style={{ color: 'var(--color-wheel-menu-text)' }}
+                className="font-pixel tracking-widest text-lg opacity-90 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                style={{ color: customLabelColors?.menu ?? 'var(--color-wheel-menu-text)' }}
               >
                 {customLabels?.menu ?? 'MENU'}
               </span>
@@ -154,8 +154,8 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.prev ? (
                 <span
-                  className="font-pixel text-sm opacity-80 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100"
-                  style={{ color: 'var(--color-wheel-icon)' }}
+                  className="font-pixel text-sm font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                  style={{ color: customLabelColors?.prev ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.prev}
                 </span>
@@ -176,8 +176,8 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.next ? (
                 <span
-                  className="font-pixel text-sm opacity-80 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100"
-                  style={{ color: 'var(--color-wheel-icon)' }}
+                  className="font-pixel text-sm font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                  style={{ color: customLabelColors?.next ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.next}
                 </span>
@@ -198,8 +198,8 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.lib ? (
                 <span
-                  className="font-pixel text-sm opacity-80 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100"
-                  style={{ color: 'var(--color-wheel-icon)' }}
+                  className="font-pixel text-sm font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                  style={{ color: customLabelColors?.lib ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.lib}
                 </span>
@@ -228,8 +228,8 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.center ? (
                 <span
-                  className="font-pixel text-xl font-bold"
-                  style={{ color: 'var(--color-wheel-icon)' }}
+                  className="font-pixel text-xl font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]"
+                  style={{ color: customLabelColors?.center ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.center}
                 </span>

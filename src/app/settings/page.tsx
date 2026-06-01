@@ -17,7 +17,7 @@ export default function Settings() {
     { id: 'RETRO_RAINBOW', title: 'RAINBOW', subtitle: '90s Arcade', color: 'bg-[#2BC2B6]' },
   ];
 
-  const specialThemes: { id: ThemeName; title: string; subtitle: string; bodyColor: string; wheelColor: string; screenColor: string; emoji: string; wheelRadius: string; labelColor: string; subtitleColor: string }[] = [
+  const specialThemes: { id: ThemeName; title: string; subtitle: string; bodyColor: string; wheelColor: string; wheelGradient?: string; screenColor: string; emoji: string; wheelRadius: string; labelColor: string; subtitleColor: string }[] = [
     {
       id: 'GAMEBOY',
       title: 'GAME BOY',
@@ -138,6 +138,19 @@ export default function Settings() {
       labelColor: '#282828',
       subtitleColor: '#003791',
     },
+    {
+      id: 'NINTENDO_SWITCH',
+      title: 'SWITCH',
+      subtitle: '🎮 Joy-Con Edition',
+      bodyColor: '#2D2D2D',
+      wheelColor: '#E4000F',
+      wheelGradient: 'linear-gradient(to right, #E4000F 50%, #0AB9E6 50%)',
+      screenColor: '#1A1A1A',
+      emoji: '🕹',
+      wheelRadius: '50%',
+      labelColor: '#FFFFFF',
+      subtitleColor: '#0AB9E6',
+    },
   ];
 
   return (
@@ -203,7 +216,7 @@ export default function Settings() {
                     {theme.emoji}
                   </div>
                   {/* Tiny wheel preview */}
-                  <div className="w-10 h-10 flex items-center justify-center shadow-md border border-black/20" style={{ background: theme.wheelColor, borderRadius: theme.wheelRadius }}>
+                  <div className="w-10 h-10 flex items-center justify-center shadow-md border border-black/20" style={{ background: theme.wheelGradient ?? theme.wheelColor, borderRadius: theme.wheelRadius }}>
                     <div className="w-4 h-4 rounded-full border border-black/20" style={{ background: theme.bodyColor }}></div>
                   </div>
                   {/* Labels */}
