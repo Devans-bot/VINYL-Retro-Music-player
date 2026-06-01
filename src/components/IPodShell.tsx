@@ -13,7 +13,12 @@ interface IPodShellProps {
 export function IPodShell({ children }: IPodShellProps) {
   const { togglePlay, nextTrack, prevTrack, setIsPlayerOpen, isPlayerOpen } = usePlayer();
   const router = useRouter();
-  const { stickers, wheelRadius, customLabels, customLabelColors, wheelGradient, screenEffect, accentStripe } = useTheme();
+  const { activeTheme, stickers, wheelRadius, customLabels, customLabelColors, wheelGradient, screenEffect, accentStripe } = useTheme();
+  
+  const isLargeIconTheme = activeTheme === 'ARCADE' || activeTheme === 'PS1' || activeTheme === 'NINTENDO_SWITCH';
+  const menuTextSize = isLargeIconTheme ? 'text-2xl' : 'text-lg';
+  const sideTextSize = isLargeIconTheme ? 'text-xl' : 'text-sm';
+  const centerTextSize = isLargeIconTheme ? 'text-3xl' : 'text-xl';
   const wheelRef = useRef<HTMLDivElement>(null);
   const prevAngleRef = useRef<number | null>(null);
   const lastTapRef = useRef<number>(0);
@@ -140,7 +145,7 @@ export function IPodShell({ children }: IPodShellProps) {
               className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-18 flex items-start justify-center pt-6 group active:bg-black/20 transition-colors duration-75 rounded-t-full"
             >
               <span
-                className="font-pixel tracking-widest text-lg opacity-90 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                className={`font-pixel tracking-widest ${menuTextSize} opacity-90 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]`}
                 style={{ color: customLabelColors?.menu ?? 'var(--color-wheel-menu-text)' }}
               >
                 {customLabels?.menu ?? 'MENU'}
@@ -154,7 +159,7 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.prev ? (
                 <span
-                  className="font-pixel text-sm font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                  className={`font-pixel ${sideTextSize} font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]`}
                   style={{ color: customLabelColors?.prev ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.prev}
@@ -176,7 +181,7 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.next ? (
                 <span
-                  className="font-pixel text-sm font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                  className={`font-pixel ${sideTextSize} font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]`}
                   style={{ color: customLabelColors?.next ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.next}
@@ -198,7 +203,7 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.lib ? (
                 <span
-                  className="font-pixel text-sm font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
+                  className={`font-pixel ${sideTextSize} font-bold opacity-90 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]`}
                   style={{ color: customLabelColors?.lib ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.lib}
@@ -228,7 +233,7 @@ export function IPodShell({ children }: IPodShellProps) {
             >
               {customLabels?.center ? (
                 <span
-                  className="font-pixel text-xl font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]"
+                  className={`font-pixel ${centerTextSize} font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]`}
                   style={{ color: customLabelColors?.center ?? 'var(--color-wheel-icon)' }}
                 >
                   {customLabels.center}

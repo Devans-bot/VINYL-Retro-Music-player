@@ -4,8 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type ThemeName =
   | 'CLASSIC' | 'GROOVY' | 'PSYCHEDELIC' | 'WOODSTOCK' | 'HOT_WAX' | 'RETRO_RAINBOW'
-  | 'GAMEBOY' | 'MACINTOSH' | 'KAWAII' | 'TEKKEN'
-  | 'WALKMAN' | 'CRT' | 'APPLE_RAINBOW' | 'Y2K' | 'ARCADE' | 'PS1'
+  | 'GAMEBOY' | 'KAWAII'
+  | 'WALKMAN' | 'CRT' | 'MACINTOSH' | 'Y2K' | 'ARCADE' | 'PS1'
   | 'NINTENDO_SWITCH';
 
 interface Sticker {
@@ -170,26 +170,7 @@ const themes: Record<ThemeName, ThemeConfig> = {
       { label: '★ RETRO', bg: '#306230', text: '#A8FF78', border: '#A8FF78', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
     ],
   },
-  MACINTOSH: {
-    '--color-ipod-body': '#E8E4D9',
-    '--color-ipod-wheel': '#C8C4B8',
-    '--color-ipod-wheel-center': '#A09C90',
-    '--color-ipod-body-border': 'rgba(100,90,70,0.3)',
-    '--color-wheel-icon': '#1A1A1A',
-    '--color-wheel-menu-text': '#1A1A1A',
-    '--color-screen-bg': '#F5F0E8',
-    '--color-screen-header': '#D0C8BC',
-    '--color-screen-border': '#1A1208',
-    '--color-retro-accent': '#555040',
-    '--wheel-border-radius': '22%',   // classic Mac rounded-rectangle
-    stickers: [
-      { label: 'THINK', bg: '#1A1208', text: '#E8E4D9', border: '#555040', position: 'absolute -left-6 top-1/4', rotate: '-rotate-12', shape: 'rounded-md', emoji: '' },
-      { label: 'DIFFERENT', bg: '#555040', text: '#F5F0E8', border: '#1A1208', position: 'absolute -right-8 top-1/5', rotate: 'rotate-6', shape: 'rounded-md', emoji: '' },
-      { label: '1984', bg: '#1A1208', text: '#E8E4D9', border: '#555040', position: 'absolute -right-6 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
-      { label: 'MAC OS', bg: '#D0C8BC', text: '#1A1208', border: '#1A1208', position: 'absolute -left-6 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-sm', emoji: '' },
-      { label: '⌘ CMD', bg: '#555040', text: '#F5F0E8', border: '#1A1208', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-md', emoji: '' },
-    ],
-  },
+
   KAWAII: {
     '--color-ipod-body': '#FFB7C5',       // cherry blossom pink
     '--color-ipod-wheel': '#FF85A1',      // hot pink wheel
@@ -210,26 +191,7 @@ const themes: Record<ThemeName, ThemeConfig> = {
       { label: '★ IDOL', bg: '#FF85A1', text: '#fff', border: '#fff', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-full', emoji: '' },
     ],
   },
-  TEKKEN: {
-    '--color-ipod-body': '#0D0D1A',       // deep night black
-    '--color-ipod-wheel': '#1A1A2E',      // dark indigo wheel
-    '--color-ipod-wheel-center': '#16213E', // midnight blue center
-    '--color-ipod-body-border': 'rgba(0,180,255,0.3)',
-    '--color-wheel-icon': '#00D4FF',      // electric cyan icon
-    '--color-wheel-menu-text': '#FFD700', // gold MENU text
-    '--color-screen-bg': '#0A0A1F',       // ultra dark blue-black screen
-    '--color-screen-header': '#111130',   // slightly lighter header
-    '--color-screen-border': '#00D4FF',   // cyan text
-    '--color-retro-accent': '#FFD700',    // gold accent
-    '--wheel-border-radius': '12%',       // square/rectangular fighting pad feel
-    stickers: [
-      { label: 'TEKKEN', bg: '#FFD700', text: '#0D0D1A', border: '#FF4500', position: 'absolute -left-6 top-1/4', rotate: '-rotate-12', shape: 'rounded-none', emoji: '' },
-      { label: 'MISHIMA', bg: '#FF4500', text: '#FFD700', border: '#FFD700', position: 'absolute -right-8 top-1/5', rotate: 'rotate-6', shape: 'rounded-none', emoji: '' },
-      { label: 'K.O!', bg: '#00D4FF', text: '#0D0D1A', border: '#FFD700', position: 'absolute -right-6 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
-      { label: '⚡ COMBO', bg: '#FFD700', text: '#0D0D1A', border: '#FF4500', position: 'absolute -left-7 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-none', emoji: '' },
-      { label: 'IRON FIST', bg: '#FF4500', text: '#FFD700', border: '#00D4FF', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
-    ],
-  },
+
 
   // ──── NEW EDITION THEMES ────
   WALKMAN: {
@@ -275,7 +237,7 @@ const themes: Record<ThemeName, ThemeConfig> = {
       { label: '📺 ON AIR', bg: '#00FF41', text: '#050F05', border: '#050F05', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-none', emoji: '' },
     ],
   },
-  APPLE_RAINBOW: {
+  MACINTOSH: {
     '--color-ipod-body': '#EDE8DC',
     '--color-ipod-wheel': '#D4CFBF',
     '--color-ipod-wheel-center': '#B0AA99',
