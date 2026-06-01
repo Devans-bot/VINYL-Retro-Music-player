@@ -13,7 +13,7 @@ interface IPodShellProps {
 export function IPodShell({ children }: IPodShellProps) {
   const { togglePlay, nextTrack, prevTrack, setIsPlayerOpen, isPlayerOpen } = usePlayer();
   const router = useRouter();
-  const { stickers, wheelRadius } = useTheme();
+  const { stickers, wheelRadius, customLabels, screenEffect, accentStripe } = useTheme();
   const wheelRef = useRef<HTMLDivElement>(null);
   const prevAngleRef = useRef<number | null>(null);
   const lastTapRef = useRef<number>(0);
@@ -54,14 +54,22 @@ export function IPodShell({ children }: IPodShellProps) {
     prevAngleRef.current = null;
   };
 
+  // Determine screen classes based on effect
+  const screenClasses = `w-full bg-screen-bg rounded-[2rem] mt-2 border-[6px] border-[#313338] h-[50%] mb-4 overflow-hidden relative shadow-inner transition-colors duration-500 z-20${
+    screenEffect === 'crt' ? ' crt-screen' : ''
+  }${screenEffect === 'y2k' ? ' y2k-screen' : ''}`;
+
+  // Accent stripe bottom bar
+  const stripeColors = accentStripe ?? ['#E53935', '#F5A623', '#4A90E2', '#50E3C2'];
+  const isCustomStripe = !!accentStripe;
+
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4">
-      {/* Background stripe */}
+      {/* Background stripe top */}
       <div className="absolute top-0 left-0 w-full flex justify-between h-2">
-        <div className="w-1/4 h-full bg-[#E53935]"></div>
-        <div className="w-1/4 h-full bg-[#F5A623]"></div>
-        <div className="w-1/4 h-full bg-[#4A90E2]"></div>
-        <div className="w-1/4 h-full bg-[#50E3C2]"></div>
+        {stripeColors.map((c, i) => (
+          <div key={i} className="flex-1 h-full" style={{ background: c }} />
+        ))}
       </div>
 
       {/* Main iPod Body */}
@@ -69,6 +77,15 @@ export function IPodShell({ children }: IPodShellProps) {
 
         {/* Inner bevel */}
         <div className="absolute inset-1 border border-white/60 rounded-[3rem] pointer-events-none"></div>
+
+        {/* Apple Rainbow vertical stripe on body edge */}
+        {screenEffect === 'rainbow' && isCustomStripe && (
+          <div className="absolute right-0 top-[15%] bottom-[15%] w-2 flex flex-col overflow-hidden rounded-r-sm z-10">
+            {stripeColors.map((c, i) => (
+              <div key={i} className="flex-1" style={{ background: c }} />
+            ))}
+          </div>
+        )}
 
         {/* Dynamic Stickers */}
         {stickers.map((sticker, i) => (
@@ -90,7 +107,19 @@ export function IPodShell({ children }: IPodShellProps) {
         </div>
 
         {/* Screen */}
-        <div className="w-full bg-screen-bg rounded-[2rem] mt-2 border-[6px] border-[#313338] h-[50%] mb-4 overflow-hidden relative shadow-inner transition-colors duration-500 z-20">
+        <div className={screenClasses}>
+          {/* CRT scanline overlay */}
+          {screenEffect === 'crt' && (
+            <>
+              <div className="crt-scanlines absolute inset-0 pointer-events-none z-10" />
+              <div className="crt-curve absolute inset-0 pointer-events-none z-10 rounded-[2rem]" />
+              <div className="crt-flicker absolute inset-0 pointer-events-none z-10" />
+            </>
+          )}
+          {/* Y2K chrome shine */}
+          {screenEffect === 'y2k' && (
+            <div className="y2k-shine absolute inset-0 pointer-events-none z-10" />
+          )}
           {children}
         </div>
 
@@ -105,7 +134,7 @@ export function IPodShell({ children }: IPodShellProps) {
             className="w-64 h-64 bg-ipod-wheel flex items-center justify-center overflow-hidden relative shadow-[0_8px_20px_rgba(0,0,0,0.2)] border-2 border-white/10 transition-all duration-500 touch-none"
             style={{ borderRadius: wheelRadius }}
           >
-            {/* Menu Button */}
+            {/* Menu / Top Button */}
             <button
               onClick={() => { setIsPlayerOpen(false); router.push('/menu'); }}
               className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-18 flex items-start justify-center pt-6 group active:bg-black/20 transition-colors duration-75 rounded-t-full"
@@ -114,55 +143,81 @@ export function IPodShell({ children }: IPodShellProps) {
                 className="font-pixel tracking-widest text-lg opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
                 style={{ color: 'var(--color-wheel-menu-text)' }}
               >
-                MENU
+                {customLabels?.menu ?? 'MENU'}
               </span>
             </button>
 
-            {/* Rewind Button */}
+            {/* Prev / Left Button */}
             <button
               onClick={() => { setIsPlayerOpen(false); prevTrack(); }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 w-20 h-22 flex items-center justify-start pl-6 group active:bg-black/20 transition-colors duration-75 "
+              className="absolute left-0 top-1/2 -translate-y-1/2 w-20 h-22 flex items-center justify-start pl-4 group active:bg-black/20 transition-colors duration-75"
             >
-              <span
-                className="opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
-                style={{ color: 'var(--color-wheel-icon)' }}
-              >
-                <SkipBack fill="currentColor" size={28} />
-              </span>
+              {customLabels?.prev ? (
+                <span
+                  className="font-pixel text-sm opacity-80 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  {customLabels.prev}
+                </span>
+              ) : (
+                <span
+                  className="opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  <SkipBack fill="currentColor" size={28} />
+                </span>
+              )}
             </button>
 
-            {/* Forward Button */}
+            {/* Next / Right Button */}
             <button
               onClick={() => { setIsPlayerOpen(false); nextTrack(); }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-22 flex items-center justify-end pr-6 group active:bg-black/20 transition-colors duration-75 "
+              className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-22 flex items-center justify-end pr-4 group active:bg-black/20 transition-colors duration-75"
             >
-              <span
-                className="opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
-                style={{ color: 'var(--color-wheel-icon)' }}
-              >
-                <SkipForward fill="currentColor" size={28} />
-              </span>
+              {customLabels?.next ? (
+                <span
+                  className="font-pixel text-sm opacity-80 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  {customLabels.next}
+                </span>
+              ) : (
+                <span
+                  className="opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  <SkipForward fill="currentColor" size={28} />
+                </span>
+              )}
             </button>
 
-            {/* Library Button */}
+            {/* Library / Bottom Button */}
             <button
               onClick={() => { setIsPlayerOpen(false); router.push('/library'); }}
               className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-18 flex items-end justify-center pb-6 group active:bg-black/20 transition-colors duration-75 rounded-b-full"
             >
-              <span
-                className="opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
-                style={{ color: 'var(--color-wheel-icon)' }}
-              >
-                <FolderBookmark size={28} />
-              </span>
+              {customLabels?.lib ? (
+                <span
+                  className="font-pixel text-sm opacity-80 group-hover:opacity-100 group-active:opacity-40 transition-all duration-100"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  {customLabels.lib}
+                </span>
+              ) : (
+                <span
+                  className="opacity-80 group-hover:opacity-100 group-active:opacity-40 group-active:scale-90 transition-all duration-100 inline-block"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  <FolderBookmark size={28} />
+                </span>
+              )}
             </button>
 
-            {/* Center Play Button */}
+            {/* Center Button */}
             <button
               onClick={() => {
                 const now = Date.now();
                 if (now - lastTapRef.current < 350) {
-                  // Double tap — toggle player
                   setIsPlayerOpen(!isPlayerOpen);
                 } else {
                   togglePlay();
@@ -171,7 +226,16 @@ export function IPodShell({ children }: IPodShellProps) {
               }}
               className="w-24 h-24 rounded-full bg-ipod-wheel-center shadow-inner border border-gray-400 flex items-center justify-center hover:opacity-90 active:opacity-60 active:scale-95 transition-all duration-100 z-10"
             >
-              <Play style={{ color: 'var(--color-wheel-icon)' }} className="opacity-80 ml-1" size={32} fill="currentColor" />
+              {customLabels?.center ? (
+                <span
+                  className="font-pixel text-xl font-bold"
+                  style={{ color: 'var(--color-wheel-icon)' }}
+                >
+                  {customLabels.center}
+                </span>
+              ) : (
+                <Play style={{ color: 'var(--color-wheel-icon)' }} className="opacity-80 ml-1" size={32} fill="currentColor" />
+              )}
             </button>
           </div>
         </div>
@@ -179,10 +243,9 @@ export function IPodShell({ children }: IPodShellProps) {
 
       {/* Bottom stripe */}
       <div className="absolute bottom-0 left-0 w-full flex justify-between h-2">
-        <div className="w-1/4 h-full bg-[#E53935]"></div>
-        <div className="w-1/4 h-full bg-[#F5A623]"></div>
-        <div className="w-1/4 h-full bg-[#4A90E2]"></div>
-        <div className="w-1/4 h-full bg-[#50E3C2]"></div>
+        {stripeColors.map((c, i) => (
+          <div key={i} className="flex-1 h-full" style={{ background: c }} />
+        ))}
       </div>
     </div>
   );

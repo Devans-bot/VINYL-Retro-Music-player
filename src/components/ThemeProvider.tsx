@@ -4,7 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type ThemeName =
   | 'CLASSIC' | 'GROOVY' | 'PSYCHEDELIC' | 'WOODSTOCK' | 'HOT_WAX' | 'RETRO_RAINBOW'
-  | 'GAMEBOY' | 'MACINTOSH' | 'KAWAII' | 'TEKKEN';
+  | 'GAMEBOY' | 'MACINTOSH' | 'KAWAII' | 'TEKKEN'
+  | 'WALKMAN' | 'CRT' | 'APPLE_RAINBOW' | 'Y2K' | 'ARCADE' | 'PS1';
 
 interface Sticker {
   label: string;
@@ -15,6 +16,14 @@ interface Sticker {
   rotate: string;
   shape: string; // rounded-md, rounded-full, etc.
   emoji?: string;
+}
+
+interface CustomLabels {
+  menu?: string;
+  prev?: string;
+  next?: string;
+  lib?: string;
+  center?: string;
 }
 
 interface ThemeConfig {
@@ -30,6 +39,9 @@ interface ThemeConfig {
   '--color-retro-accent': string;
   '--wheel-border-radius': string;
   stickers: Sticker[];
+  customLabels?: CustomLabels;
+  screenEffect?: 'crt' | 'rainbow' | 'y2k' | 'none';
+  accentStripe?: string[];
 }
 
 const defaultStickers: Sticker[] = [
@@ -207,6 +219,138 @@ const themes: Record<ThemeName, ThemeConfig> = {
       { label: 'IRON FIST', bg: '#FF4500', text: '#FFD700', border: '#00D4FF', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
     ],
   },
+
+  // ──── NEW EDITION THEMES ────
+  WALKMAN: {
+    '--color-ipod-body': '#C0C0C8',
+    '--color-ipod-wheel': '#A8A8B0',
+    '--color-ipod-wheel-center': '#303050',
+    '--color-ipod-body-border': 'rgba(0,0,0,0.2)',
+    '--color-wheel-icon': '#FF6600',
+    '--color-wheel-menu-text': '#FF6600',
+    '--color-screen-bg': '#1A1A2E',
+    '--color-screen-header': '#0F0F1A',
+    '--color-screen-border': '#FF6600',
+    '--color-retro-accent': '#FF6600',
+    '--wheel-border-radius': '18%',
+    customLabels: { menu: 'STOP', prev: 'REW', next: 'FF', lib: 'MENU', center: 'PLAY' },
+    screenEffect: 'none',
+    stickers: [
+      { label: 'WALKMAN', bg: '#FF6600', text: '#fff', border: '#000', position: 'absolute -left-8 top-1/4', rotate: '-rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'STEREO', bg: '#1A1A2E', text: '#FF6600', border: '#FF6600', position: 'absolute -right-6 top-1/5', rotate: 'rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: '◼ TAPE', bg: '#303050', text: '#fff', border: '#FF6600', position: 'absolute -right-8 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'DOLBY B', bg: '#C0C0C8', text: '#303050', border: '#303050', position: 'absolute -left-6 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: '▶ PLAY', bg: '#FF6600', text: '#fff', border: '#000', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
+    ],
+  },
+  CRT: {
+    '--color-ipod-body': '#3D3D2E',
+    '--color-ipod-wheel': '#2E2E20',
+    '--color-ipod-wheel-center': '#1A1A10',
+    '--color-ipod-body-border': 'rgba(0,0,0,0.4)',
+    '--color-wheel-icon': '#00FF41',
+    '--color-wheel-menu-text': '#00FF41',
+    '--color-screen-bg': '#050F05',
+    '--color-screen-header': '#0A1A0A',
+    '--color-screen-border': '#00FF41',
+    '--color-retro-accent': '#00FF41',
+    '--wheel-border-radius': '8%',
+    screenEffect: 'crt',
+    stickers: [
+      { label: 'CH 01', bg: '#00FF41', text: '#050F05', border: '#050F05', position: 'absolute -left-7 top-1/4', rotate: '-rotate-12', shape: 'rounded-none', emoji: '' },
+      { label: 'UHF', bg: '#050F05', text: '#00FF41', border: '#00FF41', position: 'absolute -right-5 top-1/5', rotate: 'rotate-6', shape: 'rounded-none', emoji: '' },
+      { label: 'STATIC', bg: '#3D3D2E', text: '#00FF41', border: '#00FF41', position: 'absolute -right-8 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-none', emoji: '' },
+      { label: 'NO SIGNAL', bg: '#1A1A10', text: '#00FF41', border: '#00FF41', position: 'absolute -left-8 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-none', emoji: '' },
+      { label: '📺 ON AIR', bg: '#00FF41', text: '#050F05', border: '#050F05', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-none', emoji: '' },
+    ],
+  },
+  APPLE_RAINBOW: {
+    '--color-ipod-body': '#EDE8DC',
+    '--color-ipod-wheel': '#D4CFBF',
+    '--color-ipod-wheel-center': '#B0AA99',
+    '--color-ipod-body-border': 'rgba(100,80,50,0.25)',
+    '--color-wheel-icon': '#1A1A1A',
+    '--color-wheel-menu-text': '#1A1A1A',
+    '--color-screen-bg': '#F0EBE0',
+    '--color-screen-header': '#DDD8CA',
+    '--color-screen-border': '#1A1A1A',
+    '--color-retro-accent': '#4A4035',
+    '--wheel-border-radius': '24%',
+    screenEffect: 'rainbow',
+    accentStripe: ['#FC0D1B','#FF8000','#FFED00','#51B749','#1A6FC4','#9B26AF'],
+    stickers: [
+      { label: '⌘ THINK', bg: '#1A1A1A', text: '#EDE8DC', border: '#4A4035', position: 'absolute -left-6 top-1/4', rotate: '-rotate-12', shape: 'rounded-md', emoji: '' },
+      { label: 'DIFFERENT', bg: '#4A4035', text: '#EDE8DC', border: '#1A1A1A', position: 'absolute -right-8 top-1/5', rotate: 'rotate-6', shape: 'rounded-md', emoji: '' },
+      { label: '1984', bg: '#1A1A1A', text: '#EDE8DC', border: '#4A4035', position: 'absolute -right-6 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'APPLE II', bg: '#DDD8CA', text: '#1A1A1A', border: '#1A1A1A', position: 'absolute -left-6 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: '🍎 BYTE', bg: '#4A4035', text: '#EDE8DC', border: '#1A1A1A', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-md', emoji: '' },
+    ],
+  },
+  Y2K: {
+    '--color-ipod-body': '#B8C8D8',
+    '--color-ipod-wheel': '#8AAABB',
+    '--color-ipod-wheel-center': '#1A3A5A',
+    '--color-ipod-body-border': 'rgba(0,80,160,0.2)',
+    '--color-wheel-icon': '#00AAFF',
+    '--color-wheel-menu-text': '#00AAFF',
+    '--color-screen-bg': '#F0F8FF',
+    '--color-screen-header': '#D0E8FF',
+    '--color-screen-border': '#003080',
+    '--color-retro-accent': '#0055CC',
+    '--wheel-border-radius': '30%',
+    screenEffect: 'y2k',
+    stickers: [
+      { label: 'WINAMP', bg: '#1A3A5A', text: '#00AAFF', border: '#00AAFF', position: 'absolute -left-7 top-1/4', rotate: '-rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'MP3', bg: '#00AAFF', text: '#fff', border: '#1A3A5A', position: 'absolute -right-5 top-1/5', rotate: 'rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: 'Y2K ✓', bg: '#B8C8D8', text: '#1A3A5A', border: '#1A3A5A', position: 'absolute -right-8 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: '128kbps', bg: '#1A3A5A', text: '#00AAFF', border: '#00AAFF', position: 'absolute -left-8 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: '💿 BURN', bg: '#00AAFF', text: '#fff', border: '#1A3A5A', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
+    ],
+  },
+  ARCADE: {
+    '--color-ipod-body': '#0A0A0A',
+    '--color-ipod-wheel': '#1A0000',
+    '--color-ipod-wheel-center': '#CC0000',
+    '--color-ipod-body-border': 'rgba(255,0,0,0.3)',
+    '--color-wheel-icon': '#FFD700',
+    '--color-wheel-menu-text': '#FFD700',
+    '--color-screen-bg': '#0A0A0A',
+    '--color-screen-header': '#150000',
+    '--color-screen-border': '#FFD700',
+    '--color-retro-accent': '#FF2200',
+    '--wheel-border-radius': '12%',
+    customLabels: { menu: 'START', prev: '◀◀', next: '▶▶', lib: 'SELECT', center: '●' },
+    screenEffect: 'none',
+    stickers: [
+      { label: 'INSERT COIN', bg: '#FFD700', text: '#0A0A0A', border: '#FF2200', position: 'absolute -left-8 top-1/4', rotate: '-rotate-12', shape: 'rounded-none', emoji: '' },
+      { label: 'PRESS START', bg: '#FF2200', text: '#FFD700', border: '#FFD700', position: 'absolute -right-9 top-1/5', rotate: 'rotate-6', shape: 'rounded-none', emoji: '' },
+      { label: 'PLAYER 1', bg: '#0A0A0A', text: '#FFD700', border: '#FFD700', position: 'absolute -right-7 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-none', emoji: '' },
+      { label: 'HI-SCORE', bg: '#FFD700', text: '#0A0A0A', border: '#FF2200', position: 'absolute -left-7 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-none', emoji: '' },
+      { label: '👾 GAME', bg: '#FF2200', text: '#FFD700', border: '#0A0A0A', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-none', emoji: '' },
+    ],
+  },
+  PS1: {
+    '--color-ipod-body': '#BEBEC8',
+    '--color-ipod-wheel': '#A8A8B2',
+    '--color-ipod-wheel-center': '#282828',
+    '--color-ipod-body-border': 'rgba(0,0,0,0.2)',
+    '--color-wheel-icon': '#F0F0F0',
+    '--color-wheel-menu-text': '#F0F0F0',
+    '--color-screen-bg': '#E8E8F0',
+    '--color-screen-header': '#C8C8D8',
+    '--color-screen-border': '#282828',
+    '--color-retro-accent': '#003791',
+    '--wheel-border-radius': '50%',
+    customLabels: { menu: '△', prev: '□', next: '○', lib: '✕', center: '▶' },
+    screenEffect: 'none',
+    stickers: [
+      { label: '△ ○ ✕ □', bg: '#282828', text: '#F0F0F0', border: '#003791', position: 'absolute -left-8 top-1/4', rotate: '-rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'PS ONE', bg: '#003791', text: '#fff', border: '#282828', position: 'absolute -right-7 top-1/5', rotate: 'rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: 'MEMORY', bg: '#BEBEC8', text: '#282828', border: '#282828', position: 'absolute -right-8 bottom-1/3', rotate: 'rotate-12', shape: 'rounded-sm', emoji: '' },
+      { label: 'DUALSHOCK', bg: '#282828', text: '#F0F0F0', border: '#003791', position: 'absolute -left-8 bottom-1/4', rotate: '-rotate-6', shape: 'rounded-sm', emoji: '' },
+      { label: '🎮 1998', bg: '#003791', text: '#fff', border: '#282828', position: 'absolute -right-10 top-1/2', rotate: 'rotate-3', shape: 'rounded-sm', emoji: '' },
+    ],
+  },
 };
 
 export interface ThemeContextType {
@@ -216,6 +360,9 @@ export interface ThemeContextType {
   wheelRadius: string;
   nightMode: boolean;
   setNightMode: (val: boolean) => void;
+  customLabels?: { menu?: string; prev?: string; next?: string; lib?: string; center?: string };
+  screenEffect?: string;
+  accentStripe?: string[];
 }
 
 export type { Sticker };
@@ -256,10 +403,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const currentConfig = themes[activeTheme];
-  const { stickers, '--wheel-border-radius': wheelRadius, ...cssVars } = currentConfig;
+  const { stickers, '--wheel-border-radius': wheelRadius, customLabels, screenEffect, accentStripe, ...cssVars } = currentConfig;
 
   return (
-    <ThemeContext.Provider value={{ activeTheme, setTheme: handleSetTheme, stickers, wheelRadius, nightMode, setNightMode: handleSetNightMode }}>
+    <ThemeContext.Provider value={{ activeTheme, setTheme: handleSetTheme, stickers, wheelRadius, nightMode, setNightMode: handleSetNightMode, customLabels, screenEffect, accentStripe }}>
       <div
         className="h-full w-full transition-colors duration-500"
         style={cssVars as React.CSSProperties}

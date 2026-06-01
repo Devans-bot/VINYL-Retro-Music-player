@@ -89,4 +89,61 @@ body {
   .animate-slide-up {
     animation: slideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
+
+  /* ── CRT Television Effect ── */
+  .crt-scanlines {
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.35) 3px,
+      rgba(0, 0, 0, 0.35) 4px
+    );
+    border-radius: inherit;
+  }
+
+  .crt-curve {
+    box-shadow:
+      inset 0 0 80px rgba(0, 0, 0, 0.7),
+      inset 0 0 20px rgba(0, 255, 65, 0.05);
+    border-radius: 2.5rem !important;
+  }
+
+  @keyframes flicker {
+    0%   { opacity: 1; }
+    92%  { opacity: 1; }
+    93%  { opacity: 0.85; }
+    94%  { opacity: 1; }
+    96%  { opacity: 0.9; }
+    97%  { opacity: 1; }
+    100% { opacity: 1; }
+  }
+
+  .crt-flicker {
+    animation: flicker 5s infinite;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.4) 100%);
+    border-radius: inherit;
+  }
+
+  /* RGB shift for CRT text — applied globally inside .crt-screen */
+  .crt-screen * {
+    text-shadow: 1.5px 0 0 rgba(255, 0, 0, 0.4), -1.5px 0 0 rgba(0, 0, 255, 0.4);
+  }
+
+  /* ── Y2K Chrome Shine ── */
+  .y2k-shine {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.06) 30%,
+      transparent 50%,
+      rgba(0, 170, 255, 0.08) 80%,
+      rgba(0, 170, 255, 0.15) 100%
+    );
+    border-radius: inherit;
+  }
+
+  .y2k-screen {
+    box-shadow: inset 0 0 30px rgba(0, 170, 255, 0.12), 0 0 20px rgba(0, 170, 255, 0.15);
+  }
 }
