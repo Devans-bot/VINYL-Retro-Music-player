@@ -1,14 +1,18 @@
-import type { Serwist } from 'serwist';
+/// <reference lib="webworker" />
+
 import { defaultCache } from '@serwist/next/worker';
+import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
+import { Serwist } from 'serwist';
 
-declare const self: ServiceWorkerGlobalScope & {
-  __SW_MANIFEST: (string | { url: string; revision: string | null })[];
-  serwist: Serwist;
-};
+declare global {
+  interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
+    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+  }
+}
 
-import { Serwist as SerwistClass } from 'serwist';
+declare const self: ServiceWorkerGlobalScope;
 
-const serwist = new SerwistClass({
+const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
