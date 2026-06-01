@@ -2,13 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Library, ListMusic, Home, Settings } from 'lucide-react';
+import { Library, ListMusic, Home, Settings, Download } from 'lucide-react';
 
 export default function Menu() {
   const menuItems = [
     { name: 'HOME', path: '/', icon: Home, color: 'text-[#E53935]' },
     { name: 'LIBRARY', path: '/library', icon: Library, color: 'text-[#F5A623]' },
     { name: 'PLAYLISTS', path: '/playlists', icon: ListMusic, color: 'text-[#4A90E2]' },
+    { name: 'DOWNLOADS', path: '/downloader', icon: Download, color: 'text-[#9B59B6]' },
     { name: 'SETTINGS', path: '/settings', icon: Settings, color: 'text-[#50E3C2]' },
   ];
 
