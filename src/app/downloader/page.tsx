@@ -25,12 +25,12 @@ export default function Downloader() {
       </div>
 
       {/* iFrame Content */}
-      <div className="flex-1 w-full relative bg-white">
-        <iframe
-          src="https://v20.www-y2mate.com/"
+      <div className="flex-1 w-full bg-white relative">
+        <iframe 
+          src="https://vinyl-song-dowloader-c180a8v5u-divyanshs-projects-8b969f2d.vercel.app/"
           className="absolute inset-0 w-full h-full border-none"
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
           title="Song Downloader"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         />
       </div>
     </div>
