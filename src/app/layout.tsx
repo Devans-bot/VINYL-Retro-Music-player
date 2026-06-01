@@ -6,6 +6,7 @@ import { TopBar } from "@/components/TopBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { PlayerProvider } from "@/context/PlayerContext";
 import { PlayerPopup } from "@/components/PlayerPopup";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-retro-bg text-retro-text selection:bg-retro-accent selection:text-white">
         <ThemeProvider>
           <PlayerProvider>
+            <ServiceWorkerRegister />
             <IPodShell>
               <div className="flex flex-col h-full relative">
                 <TopBar />
