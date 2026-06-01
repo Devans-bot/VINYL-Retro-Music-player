@@ -15,14 +15,14 @@ export default function Menu() {
   ];
 
   return (
-    <div className="flex flex-col h-full font-sans justify-center bg-screen-bg">
-      <div className="absolute top-0 left-0 w-full flex justify-between h-1 z-10">
+    <div className="flex flex-col h-full font-sans justify-start bg-screen-bg overflow-y-auto no-scrollbar relative pb-10">
+      <div className="absolute top-0 left-0 w-full flex justify-between h-1 z-10 pointer-events-none">
         <div className="w-1/4 h-full bg-[#E53935]"></div>
         <div className="w-1/4 h-full bg-[#F5A623]"></div>
         <div className="w-1/4 h-full bg-[#4A90E2]"></div>
         <div className="w-1/4 h-full bg-[#50E3C2]"></div>
       </div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 p-3 mt-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (
